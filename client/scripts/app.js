@@ -21,7 +21,21 @@ var Player = Backbone.Model.extend({
       } else if(event.which === 100) { //d
         that.set('left', that.get('left') + 5);
       }
+      socket.emit('changePos',
+        {
+          top: that.get('top'),
+          left: that.get('left')
+        }
+      );
     });
+
+    var socket = io.connect('http://localhost:3000');
+    socket.on('playerMove', function (data) {
+      console.log(data);
+      that.set('top', data.top);
+      that.set('left', data.left);
+    });
+
   }
 });
 
@@ -49,11 +63,13 @@ var PlayerView = Backbone.View.extend({
   className: 'player',
 
   initialize: function() {
+    var that = this;
     this.model.on('change', function() {
       this.render();
     }, this);
     this.$el.html(this.template(this.model.attributes));
     this.render();
+
   },
 
   render: function() {
