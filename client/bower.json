@@ -1,0 +1,24 @@
+{
+  "name": "pudge",
+  "version": "0.0.0",
+  "authors": [
+    "Sean Dokko <dokko1230@gmail.com>"
+  ],
+  "description": "Fling hooks and destroy your opponents!",
+  "keywords": [
+    "game"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "socket.io": "~0.9.15",
+    "jquery": "~2.1.1"
+  }
+}
