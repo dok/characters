@@ -10,25 +10,37 @@ var handler = function(req, res) {
     res.writeHead(200);
     res.end(data);
   });
-}
+};
 
 var app = require('http').createServer(handler)
   , io = require('socket.io').listen(app)
   , fs = require('fs');
+
+var players = {};
 
 app.listen(3000);
 
 io.sockets.on('connection', function (socket) {
   var wtf = Math.floor(Math.random() * 300);
   socket.emit('playerMove', { top: wtf, left: wtf });
-  socket.on('changePos', function (data) {
-    console.log('owijef', data);
+
+  socket.on('changePos', function (player) {
+    console.log('changing position', player);
+    players[player.name] = player;
+    io.sockets.emit('refreshPlayerPosition', player);
+  });
+
+  socket.on('newCharacter', function(newPlayer) {
+    console.log('new player has arrived! ', newPlayer.name);
+    players[newPlayer.name] = newPlayer;
+    console.log(players);
+    io.sockets.emit('enterCharacter', newPlayer);
   });
 });
 
-var defaultCorsHeaders = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "access-control-allow-headers": "content-type, accept",
-  "access-control-max-age": 10 // Seconds.
-};
+// var defaultCorsHeaders = {
+//   "access-control-allow-origin": "*",
+//   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+//   "access-control-allow-headers": "content-type, accept",
+//   "access-control-max-age": 10 // Seconds.
+// };
