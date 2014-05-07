@@ -2,7 +2,7 @@ var App = Backbone.Model.extend({
   initialize: function() {
     var that = this;
     this.set('myPlayer', new Player(window.name));
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect('10.4.32.241:3000');
 
     myPlayer = this.get('myPlayer');
 
