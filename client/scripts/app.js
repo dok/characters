@@ -1,10 +1,25 @@
 var App = Backbone.Model.extend({
   initialize: function() {
-    this.set('myPlayer', new Player('MARTH'));
+    var that = this;
+    this.set('myPlayer', new Player(window.name));
+    var socket = io.connect('http://localhost:3000');
 
     myPlayer = this.get('myPlayer');
 
-    var socket = io.connect('http://localhost:3000');
+    socket.emit('newCharacter', {
+      name: myPlayer.get('name'),
+      top: myPlayer.get('top'),
+      left: myPlayer.get('left')
+    });
+
+    socket.on('enterCharacter', function(newPlayer) {
+      // debugger;
+      if(newPlayer.name !== that.get('myPlayer').get('name')) {
+        that.set(newPlayer.name, new Player(newPlayer.name));
+        that.trigger('createNewCharacterView', that.get(newPlayer.name));
+      }
+    });
+
     this.set('socket', socket);
 
     $('body').keypress(function(event) {
@@ -19,12 +34,17 @@ var App = Backbone.Model.extend({
       }
       socket.emit('changePos',
         {
+          name: myPlayer.get('name'),
           top: myPlayer.get('top'),
           left: myPlayer.get('left')
         }
       );
     });
 
+    socket.on('refreshPlayers', function(player) {
+      that.get(player)
+      console.log(players);
+    });
 
     // socket.on('playerMove', function (data) {
     //   console.log(data);
@@ -39,6 +59,8 @@ var Player = Backbone.Model.extend({
     this.set('name', name);
     this.set('top', 85);
     this.set('left', 100);
+
+
   }
 });
 
@@ -54,9 +76,19 @@ var AppView = Backbone.View.extend({
 
     var myPlayerView = new PlayerView({model: this.model.get('myPlayer')});
     $(this.$el).append(myPlayerView.$el);
+
+    this.model.on('createNewCharacterView', function(newPlayer) {
+      console.log('creating a new character view');
+      this.createNewCharacterView(newPlayer);
+    }, this);
   },
   render: function() {
     // this.$el.html('');
+  },
+  createNewCharacterView: function(newPlayer) {
+    console.log('newPlayer', newPlayer);
+    var newPlayerView = new PlayerView({model: newPlayer});
+    $(this.$el).append(newPlayerView.$el);
   }
 });
 
