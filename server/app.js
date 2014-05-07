@@ -1,20 +1,24 @@
-
 var handler = function(req, res) {
-  fs.readFile(__dirname + '../client/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
+  // console.log('i love pancakes', path.resolve(__dirname, '../client/index.html'));
+  if(req.url === '/') {
+    fs.readFile(path.resolve(__dirname, '../client/index.html'),
+      function (err, data) {
+        if (err) {
+          res.writeHead(500);
+          return res.end('Error loading index.html');
+        }
 
-    res.writeHead(200);
-    res.end(data);
-  });
+        res.writeHead(200);
+        res.end(data);
+      }
+    );
+  }
 };
 
-var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app)
-  , fs = require('fs');
+var app = require('http').createServer(handler);
+var io = require('socket.io').listen(app);
+var fs = require('fs');
+var path = require('path');
 
 var players = {};
 
