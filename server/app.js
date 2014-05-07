@@ -1,6 +1,6 @@
 
 var handler = function(req, res) {
-  fs.readFile(__dirname + '/index.html',
+  fs.readFile(__dirname + '../client/index.html',
   function (err, data) {
     if (err) {
       res.writeHead(500);
@@ -21,8 +21,7 @@ var players = {};
 app.listen(3000);
 
 io.sockets.on('connection', function (socket) {
-  var wtf = Math.floor(Math.random() * 300);
-  socket.emit('playerMove', { top: wtf, left: wtf });
+  socket.emit('loadAllPlayers', players);
 
   socket.on('changePos', function (player) {
     console.log('changing position', player);

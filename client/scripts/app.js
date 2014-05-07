@@ -12,6 +12,14 @@ var App = Backbone.Model.extend({
       left: myPlayer.get('left')
     });
 
+    socket.on('loadAllPlayers', function(allPlayers) {
+      console.log('laoding all players', allPlayers);
+      _.each(allPlayers, function(player) {
+        that.set(player.name, new Player(player.name, player.top, player.left));
+        that.trigger('createNewCharacterView', that.get(player.name));
+      });
+    });
+
     socket.on('enterCharacter', function(newPlayer) {
       // debugger;
       if(newPlayer.name !== that.get('myPlayer').get('name')) {
@@ -41,24 +49,32 @@ var App = Backbone.Model.extend({
       );
     });
 
-    socket.on('refreshPlayers', function(player) {
-      that.get(player)
-      console.log(players);
+    socket.on('refreshPlayerPosition', function(player) {
+      // console.log(players);
+      // debugger;
+      if(that.get(player.name) && that.get(player.name).get('name') !== that.get('myPlayer').get('name')) {
+        that.get(player.name).set('top', player.top);
+        that.get(player.name).set('left', player.left);
+
+      }
     });
 
-    // socket.on('playerMove', function (data) {
-    //   console.log(data);
-    //   that.set('top', data.top);
-    //   that.set('left', data.left);
-    // });
   }
 });
 
 var Player = Backbone.Model.extend({
-  initialize: function(name) {
+  initialize: function(name, top, left) {
     this.set('name', name);
-    this.set('top', 85);
-    this.set('left', 100);
+    if(top) {
+      this.set('top', top);
+    } else {
+      this.set('top', 85);
+    }
+    if(left) {
+      this.set('left', left);
+    } else {
+      this.set('left', 100);
+    }
 
 
   }

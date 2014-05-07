@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/backbone/backbone.js"></script>
-    <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- // <script src="bower_components/socket.io/lib/socket.io.js"></script> -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <link rel="stylesheet" href="styles/layout.css">
   </head>
   <body>
-    <div>hello world</div>
+    <script class="playerTemplate" type="text/template">
+      <div class="player"> <%= name %> </div>
+    </script>
 
     <script src="scripts/app.js"></script>
+
     <script>
+      window.name = prompt('What is your characters name?');
       var app = new App();
+      var appView = new AppView({model: app});
+      $('body').append(appView.$el);
     </script>
   </body>
 </html>
